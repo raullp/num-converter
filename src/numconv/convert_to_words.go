@@ -4,8 +4,8 @@ var ones = [...]string{"zero", "one", "two", "three", "four", "five", "six", "se
 	"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"}
 var tens = [...]string{"", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"}
 
-// Complete list of names for large numbers could be find here https://en.wikipedia.org/wiki/Names_of_large_numbers
-var namesForLargeNumbers = map[int]string{
+// Complete list of names for large numbers can be find here https://en.wikipedia.org/wiki/Names_of_large_numbers
+var scalesForLargeNumbers = map[int]string{
 	3:  "thousand",
 	6:  "million",
 	9:  "billion",
@@ -33,9 +33,6 @@ func ConvertToWords(n int) string {
 	if n < 100 {
 		return convertTens(n)
 	}
-	if n < 1000 {
-		return convertHundreds(n)
-	}
 	return convertLargeNumber(n)
 }
 
@@ -43,12 +40,12 @@ func convertTens(n int) string {
 	if n < 20 {
 		return ones[n]
 	}
-	t := tens[n/10]
-	o := n % 10
+
+	t, o := div(n, 10)
 	if o == 0 {
-		return t
+		return tens[t]
 	}
-	return t + "-" + ones[o]
+	return tens[t] + "-" + ones[o]
 }
 
 func convertHundreds(n int) string {
@@ -56,8 +53,7 @@ func convertHundreds(n int) string {
 		return ""
 	}
 
-	h := n / 100
-	t := n % 100
+	h, t := div(n, 100)
 
 	if h > 0 && t > 0 {
 		return ones[h] + " hundred " + convertTens(t)
@@ -69,23 +65,33 @@ func convertHundreds(n int) string {
 }
 
 func convertLargeNumber(n int) string {
-	scale := 3
-	w := convertHundreds(n % 1000)
+	s := 3
+	words := convertHundreds(n % 1000)
 	n /= 1000
 
 	for ok := true; ok; ok = n > 0 {
-		h := n % 1000
-		if h > 0 {
-			s := convertHundreds(n%1000) + " " + namesForLargeNumbers[scale]
-			if len(w) > 0 {
-				w = s + " " + w	
-			} else {
-				w = s
-			}
+		block := n % 1000
+		if block > 0 {
+			scale := convertHundreds(block) + " " + scalesForLargeNumbers[s]
+			words = join(scale, words)
 		}
 		n /= 1000
-		scale += 3
+		s += 3
 	}
 
-	return w
+	return words
+}
+
+func join(a string, b string) string {
+	if len(a) > 0 && len(b) > 0 {
+		return a + " " + b
+	}
+	if len(a) > 0 {
+		return a
+	}
+	return b
+}
+
+func div(x int, y int) (int, int) {
+	return x / y, x % y
 }

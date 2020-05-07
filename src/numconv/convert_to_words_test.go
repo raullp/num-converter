@@ -7,6 +7,7 @@ func TestConvertToWordsForOnes(t *testing.T) {
 		n int
 		w string
 	}{
+		{0, "zero"},
 		{1, "one"},
 		{2, "two"},
 		{3, "three"},
