@@ -3,6 +3,8 @@ package error
 import (
 	"fmt"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Op string
@@ -17,9 +19,10 @@ const (
 )
 
 type Error struct {
-	Err  error
-	Op   Op
-	Kind Kind
+	Err      error
+	Op       Op
+	Kind     Kind
+	Severity log.Level
 }
 
 func (e *Error) Error() string {
@@ -36,6 +39,8 @@ func E(args ...interface{}) error {
 			e.Op = v
 		case Kind:
 			e.Kind = v
+		case log.Level:
+			e.Severity = v
 		default:
 			panic("bad call to E")
 		}
@@ -52,4 +57,32 @@ func GetKind(err error) Kind {
 		return e.Kind
 	}
 	return GetKind(e.Err)
+}
+
+func SystemError(err error) {
+	e, ok := err.(*Error)
+	if !ok {
+		log.Error(err)
+	}
+	entry := log.WithFields(log.Fields{
+		"operations": e.Op,
+		"kind":       e.Kind,
+	})
+
+	switch e.Severity {
+	case log.PanicLevel:
+		entry.Panicf("%s: %v", e.Op, err)
+	case log.ErrorLevel:
+		entry.Errorf("%s: %v", e.Op, err)
+	case log.FatalLevel:
+		entry.Fatalf("%s: %v", e.Op, err)
+	case log.WarnLevel:
+		entry.Warnf("%s: %v", e.Op, err)
+	case log.InfoLevel:
+		entry.Infof("%s: %v", e.Op, err)
+	case log.DebugLevel:
+		entry.Debugf("%s: %v", e.Op, err)
+	case log.TraceLevel:
+		entry.Tracef("%s: %v", e.Op, err)
+	}
 }

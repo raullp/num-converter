@@ -26,7 +26,7 @@ func jsonErrorReporterT(errType gin.ErrorType) gin.HandlerFunc {
 		}
 
 		err := detectedErrors[0].Err
-
+		SystemError(err)
 		response := &errorResponse{
 			Code:   KindUnexpected,
 			Detail: "Internal Server Error",
