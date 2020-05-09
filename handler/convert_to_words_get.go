@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/raullp/num-converter/error"
+	"github.com/raullp/num-converter/model"
 	"github.com/raullp/num-converter/numconv"
 	log "github.com/sirupsen/logrus"
 )
@@ -20,8 +21,9 @@ func ConvertToWords(c *gin.Context) {
 		return
 	}
 	words := numconv.ConvertToWords(number)
-	c.JSON(http.StatusOK, gin.H{
-		"status":         "ok",
-		"num_in_english": words,
-	})
+	response := &model.NumToWords{
+		Status:       "ok",
+		NumInEnglish: words,
+	}
+	c.JSON(http.StatusOK, response)
 }
