@@ -14,3 +14,9 @@ num-converter
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Ignore swag docs
+docs/swagger.json
+docs/swagger.yaml
+
+
