@@ -4,12 +4,11 @@
 
 ### Local
 
-Install Gin Web Framework
+num-converter uses [GoLang modules](https://blog.golang.org/using-go-modules) which is on charge of dowloading the dependencies.
 
 ```sh
-go get -u github.com/gin-gonic/gin
-go get -u github.com/stretchr/testify/assert
-go get -u github.com/sirupsen/logrus
+go build
+go run main.go
 ```
 
 ## Run Docker
