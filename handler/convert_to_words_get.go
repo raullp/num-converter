@@ -3,7 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strconv"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/raullp/num-converter/error"
@@ -27,12 +27,17 @@ import (
 func ConvertToWords(c *gin.Context) {
 	const op error.Op = "convert.ConvertToWords"
 	const badRequest error.Kind = error.KindBadRequest
-	number, err := strconv.Atoi(c.Param("number"))
-	if err != nil {
+	number := c.Param("number")
+	
+	re := regexp.MustCompile(`(0|([1-9]\d*))`)
+
+	matches := re.MatchString(number)
+
+	if !matches {
 		c.Error(error.E(errors.New("number: is not a valid number"), op, badRequest, log.ErrorLevel))
 		return
 	}
-	words := numconv.ConvertToWords(number)
+	words := numconv.ConvertToWordsA(number)
 	response := &model.NumToWords{
 		Status:       "ok",
 		NumInEnglish: words,
