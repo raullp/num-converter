@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"../error"
-	"../numconv"
 	"github.com/gin-gonic/gin"
+	"github.com/raullp/num-converter/error"
+	"github.com/raullp/num-converter/numconv"
 	log "github.com/sirupsen/logrus"
 )
 

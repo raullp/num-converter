@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./error"
-	"./handler"
 	"github.com/gin-gonic/gin"
+	"github.com/raullp/num-converter/error"
+	"github.com/raullp/num-converter/handler"
 )
 
 func setupRouter() *gin.Engine {
